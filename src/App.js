@@ -7,7 +7,7 @@ import Parrafo from "./componentes/Parrafo";*/
 
 function App() {
   return (
-    <div className='container mt-5'>
+    <div className='container mt-5 text-light bg-dark'>
       {/*<Parrafo/>
       <Onclick/>
       <Contador/>
