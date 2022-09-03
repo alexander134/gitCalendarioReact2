@@ -3,16 +3,43 @@ import { useState } from 'react'
 import shortid from 'shortid'
 
 const Formulario = () => {
-const [formularioIng, setformularioIng] = useState({})
+const [formularioIng, setformularioIng] = useState({nombre:'',apellido:'',password:''})
 const [formularioError, setformularioError] = useState({})
 const [usuario, setUsuario] = useState([])
 const [modoEditar,setModoEditar]= useState(false)
+const [idEdit,setIdEdit]=useState('')
 
     const formulariollenado = (e)=>{
         setformularioIng({...formularioIng,[e.target.name]:e.target.value})
     }
+
+    const editarDatos=e=>{
+        e.preventDefault()
+        if(validacionDatos()){
+            debugger;
+            let arrayUsuEdit=usuario.map((ele)=> ele.id===idEdit ? {id:ele.id,nombre:formularioIng.nombre,apellido:formularioIng.apellido,password:formularioIng.password}:ele)
+            setUsuario(arrayUsuEdit)
+
+            e.target.reset()
+            setformularioIng({nombre:'',apellido:'',password:''})
+            setIdEdit(false)
+            setModoEditar(false)
+            return
+        }
+    }
+
     const procesarDatos = (e)=>{
         e.preventDefault()
+        if(validacionDatos()){
+            //setUsuario([...usuario, {...formularioIng, id:usuario.length+1}])
+            setUsuario([...usuario, {...formularioIng, id:shortid.generate()}])
+            e.target.reset()
+            setformularioIng({nombre:'',apellido:'',password:''})
+            return
+        }
+    }
+
+    const validacionDatos= ()=>{
         let error={}
         if(Object.keys(formularioIng).length !== 0){
             if(formularioIng.nombre===undefined || formularioIng.nombre ===''){
@@ -43,22 +70,23 @@ const [modoEditar,setModoEditar]= useState(false)
         }
         setformularioError(error)
         if(!error.nombre && !error.apellido && !error.password){
-            //setUsuario([...usuario, {...formularioIng, id:usuario.length+1}])
-            setUsuario([...usuario, {...formularioIng, id:shortid.generate()}])
-            e.target.reset()
-            setformularioIng({})
-            return
+            return true
+        }else{
+            return false
         }
-        
     }
     const eliminarUsuario= (id)=>{
         const arrayfiltrado = usuario.filter(elemt => elemt.id!==id)
         setUsuario(arrayfiltrado)
+        setModoEditar(false)
+        setformularioIng({nombre:'',apellido:'',password:''})
     }
 
     const editarUsuario= (id)=>{
         const arrayfiltrado = usuario.filter(elemt => elemt.id===id)
-        setformularioIng(arrayfiltrado)
+        setIdEdit(id)
+        setformularioIng(arrayfiltrado[0])
+        setModoEditar(true)
     }
 
   return (
@@ -68,10 +96,9 @@ const [modoEditar,setModoEditar]= useState(false)
                 <div className="row">
                     <div className="col-12 text-center pt-2"><h4>Lista de Usuarios Registrados</h4></div>
                     <div className="col-12">
+                    <ul className='list-group'>
                     {
                         usuario.length!==0 ? (
-                            <ul className='list-group'>
-                                {
                                 usuario.map((elem)=>(
                                     <li  className='list-group-item' key={elem.id}>
                                         <span className='lead'> {elem.nombre} - {elem.apellido} - {elem.password}</span>
@@ -79,30 +106,34 @@ const [modoEditar,setModoEditar]= useState(false)
                                         <button className='btn btn-warning btn-sm float-right' onClick={()=>editarUsuario(elem.id)}>Editar</button>
                                     </li>
                                 )) 
-                                }
-                            </ul>
-                        ) : "Lista de usuarios vacia"
+                        ) : (
+                            <li  className='list-group-item text-center' >No hay Usuarios Registrados</li>
+                        )
                     }
+                    </ul>
                     </div>
                 </div>
             </div>
             <div className="col-6">
                 <div className="row">
-                    <div className="col-12 text-center p-2"><h4>Formulario de Ingreso</h4></div>
+                    <div className="col-12 text-center p-2">
+                        <h4>
+                        {modoEditar ? "Editar Usuario":"Formulario de Ingreso"}
+                        </h4>
+                    </div>
                     <div className="col-12 pb-2">
-                        <form onSubmit={procesarDatos}>
+                        <form onSubmit={modoEditar ? editarDatos  : procesarDatos }>
                             <input type="text" placeholder='Ingrese Nombre' name='nombre' className='form-control mb-2' value={formularioIng.nombre}  onChange={(e)=>formulariollenado(e)}/>
                             { formularioError.nombre===true && (<div className="invalid-feedbackaa">Error!</div>)} 
-                            <input type="text" placeholder='Ingrese Apellido' name='apellido' className='form-control mb-2' onChange={(e)=>formulariollenado(e)} />
+                            <input type="text" placeholder='Ingrese Apellido' name='apellido' className='form-control mb-2' value={formularioIng.apellido} onChange={(e)=>formulariollenado(e)} />
                             { formularioError.apellido===true && (<div className="invalid-feedbackaa">Error!</div>)} 
-                            <input type="password" placeholder='Contraseña' name='password' className='form-control mb-2' onChange={(e)=>formulariollenado(e)} />
+                            <input type="password" placeholder='Contraseña' name='password' className='form-control mb-2' value={formularioIng.password} onChange={(e)=>formulariollenado(e)} />
                             { formularioError.password===true && (<div className="invalid-feedbackaa">Error!</div>)} 
                             {
-                                modoEditar ? (
-                                    <button className='btn btn-success btn-block ' type='submit'>Editar Usuario</button>
-                                ):(
+                                modoEditar ? 
+                                    <button className='btn btn-warning btn-block ' type='submit'>Editar Usuario</button>
+                                :
                                     <button className='btn btn-success btn-block ' type='submit'>Agregar Cuenta</button>
-                                )
                             }
                             
                         </form>
