@@ -1,7 +1,7 @@
 import React from 'react'
 import Formulario from './componentes/Formulario';
 import {
-  BrowserRouter as Router,
+  
   Switch,
   Route,
   Link,
@@ -18,7 +18,7 @@ import Parrafo from "./componentes/Parrafo";*/
 
 function App() {
   return (
-    <Router>
+    
       <div className='container mt-5 bg-dark1'>
         <div className='btn-group'>
           <Link to='/' className='btn btn-dark' >Inicio</Link>
@@ -57,7 +57,7 @@ function App() {
         <Contador/>
       <Lista/>*/}
       </div>
-    </Router>
+    
   );
 }
 
