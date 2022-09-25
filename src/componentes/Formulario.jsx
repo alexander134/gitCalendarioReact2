@@ -4,7 +4,7 @@ import shortid from 'shortid'
 
 const Formulario = () => {
 const [formularioIng, setformularioIng] = useState({nombre:'',apellido:'',password:''})
-const [formularioError, setformularioError] = useState({})
+const [formularioError, setformularioError] = useState({nombreT:'Debe agregar un nombre',apellidoT:'Debe Agregar un apellido',passwordT:'Debe agregar una contraseña'})
 const [usuario, setUsuario] = useState([])
 const [modoEditar,setModoEditar]= useState(false)
 const [idEdit,setIdEdit]=useState('')
@@ -16,7 +16,6 @@ const [idEdit,setIdEdit]=useState('')
     const editarDatos=e=>{
         e.preventDefault()
         if(validacionDatos()){
-            debugger;
             let arrayUsuEdit=usuario.map((ele)=> ele.id===idEdit ? {id:ele.id,nombre:formularioIng.nombre,apellido:formularioIng.apellido,password:formularioIng.password}:ele)
             setUsuario(arrayUsuEdit)
 
@@ -68,7 +67,7 @@ const [idEdit,setIdEdit]=useState('')
             error.apellido=true
             error.password=true
         }
-        setformularioError(error)
+        setformularioError({...formularioError,...error})
         if(!error.nombre && !error.apellido && !error.password){
             return true
         }else{
@@ -123,12 +122,13 @@ const [idEdit,setIdEdit]=useState('')
                     </div>
                     <div className="col-12 pb-2">
                         <form onSubmit={modoEditar ? editarDatos  : procesarDatos }>
+                            { formularioError.nombre===true && (<div className="invalid-feedbackaa text-danger">{formularioError.nombreT}</div>)} 
                             <input type="text" placeholder='Ingrese Nombre' name='nombre' className='form-control mb-2' value={formularioIng.nombre}  onChange={(e)=>formulariollenado(e)}/>
-                            { formularioError.nombre===true && (<div className="invalid-feedbackaa">Error!</div>)} 
+                            { formularioError.apellido===true && (<div className="invalid-feedbackaa text-danger">{formularioError.apellidoT}</div>)} 
                             <input type="text" placeholder='Ingrese Apellido' name='apellido' className='form-control mb-2' value={formularioIng.apellido} onChange={(e)=>formulariollenado(e)} />
-                            { formularioError.apellido===true && (<div className="invalid-feedbackaa">Error!</div>)} 
+                            { formularioError.password===true && (<div className="invalid-feedbackaa text-danger">{formularioError.passwordT}</div>)} 
                             <input type="password" placeholder='Contraseña' name='password' className='form-control mb-2' value={formularioIng.password} onChange={(e)=>formulariollenado(e)} />
-                            { formularioError.password===true && (<div className="invalid-feedbackaa">Error!</div>)} 
+                            
                             {
                                 modoEditar ? 
                                     <button className='btn btn-warning btn-block ' type='submit'>Editar Usuario</button>
