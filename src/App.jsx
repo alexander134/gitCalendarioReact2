@@ -1,7 +1,6 @@
 import React from 'react'
 import Formulario from './componentes/Formulario';
 import {
-  
   Switch,
   Route,
   Link,
@@ -11,10 +10,9 @@ import Login from './componente2/Login';
 import Configuration from './componente2/Configuration';
 import Mantenedores from './componente2/Mantenedores';
 import Dashboard from './componente2/Dashboard';
-/*import Contador from './componentes/Contador';
-import Lista from './componentes/Lista';
-import Onclick from './componentes/Onclick';
-import Parrafo from "./componentes/Parrafo";*/
+import Ejemplos from './componentes/Ejemplos';
+import CompApiUseEf from './componentes/CompApiUseEf';
+
 
 function App() {
   return (
@@ -27,9 +25,13 @@ function App() {
           <Link to='/configuration' className='btn btn-dark'>Configuración</Link>
           <Link to='/dashboard' className='btn btn-dark'>Escritorio</Link>
           <Link to='/mantenedores' className='btn btn-dark' >Mantenedor</Link>
+          <Link to='/ejemplos' className='btn btn-dark' >Ejemplos</Link>
         </div>
         <hr />
         <Switch>
+          <Route exact path='/ejemplo/sUseEffect/:id'>
+            <CompApiUseEf/>
+          </Route>
           <Route exact path='/'>
             Pagina de inicio
           </Route>
@@ -48,14 +50,10 @@ function App() {
           <Route path='/mantenedores'>
             <Mantenedores/>
           </Route>
+          <Route path='/ejemplos'>
+            <Ejemplos/>
+          </Route>
         </Switch>
-        
-        
-        
-        {/*<Parrafo/>
-        <Onclick/>
-        <Contador/>
-      <Lista/>*/}
       </div>
     
   );

@@ -1,6 +1,6 @@
-import React from 'react'
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import shortid from 'shortid'
+import {firebase} from '../firebase'
 
 const Formulario = () => {
 const [formularioIng, setformularioIng] = useState({nombre:'',apellido:'',password:''})
@@ -8,6 +8,9 @@ const [formularioError, setformularioError] = useState({nombreT:'Debe agregar un
 const [usuario, setUsuario] = useState([])
 const [modoEditar,setModoEditar]= useState(false)
 const [idEdit,setIdEdit]=useState('')
+const [local,setlocal]=useState(false)
+//const [usuarioFT,setusuarioFT]=useState([])
+
 
     const formulariollenado = (e)=>{
         setformularioIng({...formularioIng,[e.target.name]:e.target.value})
@@ -27,14 +30,25 @@ const [idEdit,setIdEdit]=useState('')
         }
     }
 
-    const procesarDatos = (e)=>{
+    const procesarDatos = async (e)=>{
         e.preventDefault()
         if(validacionDatos()){
-            //setUsuario([...usuario, {...formularioIng, id:usuario.length+1}])
-            setUsuario([...usuario, {...formularioIng, id:shortid.generate()}])
-            e.target.reset()
-            setformularioIng({nombre:'',apellido:'',password:''})
-            return
+            if(local){
+                //setUsuario([...usuario, {...formularioIng, id:usuario.length+1}])
+                debugger;
+                setUsuario([...usuario, {...formularioIng, id:shortid.generate()}])
+                e.target.reset()
+                setformularioIng({nombre:'',apellido:'',password:''})
+                return
+            }else{
+                try {
+                    const db = firebase.firestore()
+                    const data = await db.collection('usuario').add(formularioIng)
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+            
         }
     }
 
@@ -87,6 +101,23 @@ const [idEdit,setIdEdit]=useState('')
         setformularioIng(arrayfiltrado[0])
         setModoEditar(true)
     }
+
+    useEffect(() => {
+    const obtenerDatos= async ()=>{
+        try {
+            const db = firebase.firestore()
+            const data = await db.collection('usuario').get()
+            console.log(data.docs)
+            
+            const arrayData =  data.docs.map(doc => ({ id:doc.id,...doc.data()}))
+            setUsuario(arrayData)
+        } catch (error) {
+           console.log(error) 
+        }
+    }
+
+    obtenerDatos()
+}, [])
 
   return (
     <div>
