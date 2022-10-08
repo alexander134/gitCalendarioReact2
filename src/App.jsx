@@ -12,22 +12,13 @@ import Mantenedores from './componente2/Mantenedores';
 import Dashboard from './componente2/Dashboard';
 import Ejemplos from './componentes/Ejemplos';
 import CompApiUseEf from './componentes/CompApiUseEf';
-
+import Navbar from './componente2/Navbar'
 
 function App() {
   return (
     
-      <div className='container mt-5 text-light bg-dark'>
-        <div className='btn-group'>
-          <NavLink to='/' className='btn btn-light' >Inicio</NavLink>
-          <NavLink to='/register' className='btn btn-light' activeClassName='active'>Registrar</NavLink>
-          <NavLink to='/login' className='btn btn-light' activeClassName='active'>Iniciar Sessión</NavLink>
-          <NavLink to='/configuration' className='btn btn-light' activeClassName='active'>Configuración</NavLink>
-          <NavLink to='/dashboard' className='btn btn-light' activeClassName='active'>Escritorio</NavLink>
-          <NavLink to='/mantenedores' className='btn btn-light' activeClassName='active'>Mantenedor</NavLink>
-          <NavLink to='/ejemplos' className='btn btn-light' activeClassName='active'>Ejemplos</NavLink>
-        </div>
-        <hr />
+      <div className='container mt-5- text-light- bg-dark-'>
+        <Navbar/>
         <Switch>
           <Route exact path='/ejemplo/sUseEffect/:id'>
             <CompApiUseEf/>
