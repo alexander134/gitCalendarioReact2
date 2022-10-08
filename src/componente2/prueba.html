@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script>
+
+    
+// Responsables de los cuarteles
+const paddockManagers = [
+  { id: 1, taxNumber: '132254524', name: 'JUAN TAPIA BURGOS'},
+  { id: 2, taxNumber: '143618668', name: 'EFRAIN SOTO VERA'},
+  { id: 3, taxNumber: '78903228', name: 'CARLOS PEREZ GONZALEZ'},
+  { id: 4, taxNumber: '176812737', name: 'ANDRES VIÑALES CIENFUEGOS'},
+  { id: 5, taxNumber: '216352696', name: 'OSCAR PEREZ ZUÑIGA'},
+  { id: 6, taxNumber: '78684747', name: 'JOAQUIN ANDRADE SANDOVAL' }
+];
+
+// Tipo de cuartel, en el cual se utiliza el tipo de producto plantado
+const paddockType = [
+  { id: 1, name: 'PALTOS' },
+  { id: 2, name: 'AVELLANOS' },
+  { id: 3, name: 'CEREZAS' },
+  { id: 4, name: 'NOGALES' },
+]
+
+// Un paddock representa un cuartel de un campo (Entiéndase también como potrero o parcela), el área está representada en m2, harvestYear es el año en el que se sembró el cuartel
+const paddocks = [
+  { paddockManagerId: 6, farmId: 1, paddockTypeId: 1, harvestYear: 2019, area: 1200 },
+  { paddockManagerId: 1, farmId: 3, paddockTypeId: 4, harvestYear: 2019, area: 500 },
+  { paddockManagerId: 5, farmId: 3, paddockTypeId: 2, harvestYear: 2020, area: 20000 },
+  { paddockManagerId: 2, farmId: 2, paddockTypeId: 3, harvestYear: 2021, area: 8401},
+  { paddockManagerId: 3, farmId: 1, paddockTypeId: 1, harvestYear: 2020, area: 2877 },
+  { paddockManagerId: 5, farmId: 2, paddockTypeId: 2, harvestYear: 2017, area: 15902 },
+  { paddockManagerId: 3, farmId: 3, paddockTypeId: 2, harvestYear: 2018, area: 1736 },
+  { paddockManagerId: 2, farmId: 3, paddockTypeId: 3, harvestYear: 2020, area: 2965 },
+  { paddockManagerId: 4, farmId: 3, paddockTypeId: 4, harvestYear: 2018, area: 1651 },
+  { paddockManagerId: 5, farmId: 1, paddockTypeId: 1, harvestYear: 2018, area: 700 },
+  { paddockManagerId: 1, farmId: 2, paddockTypeId: 1, harvestYear: 2019, area: 7956 },
+  { paddockManagerId: 5, farmId: 3, paddockTypeId: 2, harvestYear: 2020, area: 3745 },
+  { paddockManagerId: 6, farmId: 1, paddockTypeId: 3, harvestYear: 2021, area: 11362 },
+  { paddockManagerId: 2, farmId: 3, paddockTypeId: 3, harvestYear: 2021, area: 300 },
+  { paddockManagerId: 3, farmId: 2, paddockTypeId: 2, harvestYear: 2020, area: 19188 },
+  { paddockManagerId: 3, farmId: 1, paddockTypeId: 1, harvestYear: 2019, area: 17137 },
+  { paddockManagerId: 4, farmId: 3, paddockTypeId: 2, harvestYear: 2020, area: 100 },
+  { paddockManagerId: 2, farmId: 1, paddockTypeId: 3, harvestYear: 2019, area: 11845 },
+  { paddockManagerId: 5, farmId: 2, paddockTypeId: 1, harvestYear: 2018, area: 15969 },
+  { paddockManagerId: 1, farmId: 3, paddockTypeId: 1, harvestYear: 2029, area: 10420 },
+  { paddockManagerId: 5, farmId: 2, paddockTypeId: 3, harvestYear: 2010, area: 3200 },
+  { paddockManagerId: 6, farmId: 1, paddockTypeId: 2, harvestYear: 2012, area: 10587 },
+  { paddockManagerId: 2, farmId: 2, paddockTypeId: 2, harvestYear: 2018, area: 16750 }
+];
+
+const farms = [
+  { id: 1, name: 'AGRICOLA SANTA ANA' },
+  { id: 2, name: 'VINA SANTA PAULA' },
+  { id: 3, name: 'FORESTAL Y AGRICOLA LO ENCINA' }
+];
+
+function listPaddockManagerIds() {
+  return paddockManagers.map((paddockManager) => paddockManager.id);
+}
+
+function listPaddockManagersByName() {
+   let rutOrdByName=[...paddockManagers]
+   rutOrdByName.sort((a, b) => {
+    if (a.name > b.name) {
+      return 1;
+    }
+    if (a.name < b.name) {
+      return -1;
+    }
+    return 0;
+  })
+  return rutOrdByName.map(r => r.taxNumber);
+};
+
+// 2 Arreglo con los nombres de cada tipo de cultivo, ordenados decrecientemente por la suma TOTAL de la cantidad de hectáreas plantadas de cada uno de ellos.
+function sortPaddockTypeByTotalArea() {
+  
+  let sumatoriaArea= paddockType.map(type=>{
+    let suma=0;
+    paddocks.map(padd=>{
+      if(type.id==padd.paddockTypeId){
+        suma += padd.area
+      }
+    })
+    return {...type,sumatoria:suma}
+  }).sort((a, b) => {
+    if (a.sumatoria < b.sumatoria) {
+      return 1;
+    }
+    if (a.sumatoria > b.sumatoria) {
+      return -1;
+    }
+    return 0;
+  })
+  return sumatoriaArea.map(r => r.name);
+}
+
+// 3 Arreglo con los nombres de los administradores, ordenados decrecientemente por la suma TOTAL de hectáreas que administran.
+function sortFarmManagerByAdminArea() {
+  let sumatoriaArea= paddockManagers.map(type=>{
+    let suma=0;
+    paddocks.map(padd=>{
+      if(type.id==padd.paddockManagerId){
+        suma += padd.area
+      }
+    })
+    return {...type,sumaArea:suma}
+  }).sort((a, b) => {
+    if (a.sumaArea < b.sumaArea) {
+      return 1;
+    }
+    if (a.sumaArea > b.sumaArea) {
+      return -1;
+    }
+    return 0;
+  })
+  return sumatoriaArea.map(r => r.name);
+}
+
+// 4 Objeto en que las claves sean los nombres de los campos y los valores un arreglo con los ruts de sus administradores ordenados alfabéticamente por nombre.
+function farmManagerNames() {
+  result={}
+  farms.map(campos =>{
+     let rut=[]
+      paddocks.map(union =>{
+      if(union.farmId===campos.id){
+        respuesta =paddockManagers.filter(cliente=> {
+          if(cliente.id === union.paddockManagerId){
+            return cliente.name
+          }
+        })
+        rut[respuesta[0].id]={name:respuesta[0].name, rut:respuesta[0].taxNumber}
+      }
+     })
+     
+     rut.sort((a, b) => {
+      if (a.name > b.name) {
+        return 1;
+      }
+      if (a.name < b.name) {
+        return -1;
+      }
+      return 0;
+    })
+
+    result={...result,
+      [campos.name]:rut.map(ele =>ele.rut).filter(function(x) {return x !== undefined})
+    }
+  })
+
+  return result
+}
+
+  </script>
+</head>
+<body>
+<button type="button"
+onclick="document.getElementById('demo').innerHTML = Date()">
+Click me to display Date and Time.</button>
+
+<p id="demo"></p>
+
+</body>
+</html> 
+
+

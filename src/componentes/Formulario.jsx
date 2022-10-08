@@ -16,16 +16,25 @@ const [local,setlocal]=useState(false)
         setformularioIng({...formularioIng,[e.target.name]:e.target.value})
     }
 
-    const editarDatos=e=>{
+    const editarDatos= async e=>{
         e.preventDefault()
         if(validacionDatos()){
-            let arrayUsuEdit=usuario.map((ele)=> ele.id===idEdit ? {id:ele.id,nombre:formularioIng.nombre,apellido:formularioIng.apellido,password:formularioIng.password}:ele)
-            setUsuario(arrayUsuEdit)
-
+            if(local){
+                let arrayUsuEdit=usuario.map((ele)=> ele.id===idEdit ? {id:ele.id,nombre:formularioIng.nombre,apellido:formularioIng.apellido,password:formularioIng.password}:ele)
+                setUsuario(arrayUsuEdit)
+            }else{
+                try {
+                    const db = firebase.firestore()
+                    await db.collection('usuario').doc(idEdit).update({nombre:formularioIng.nombre,apellido:formularioIng.apellido,password:formularioIng.password})
+                } catch (error) {
+                    console.log(error)
+                }
+            }
             e.target.reset()
             setformularioIng({nombre:'',apellido:'',password:''})
             setIdEdit(false)
             setModoEditar(false)
+            obtenerDatos()
             return
         }
     }
@@ -44,6 +53,9 @@ const [local,setlocal]=useState(false)
                 try {
                     const db = firebase.firestore()
                     const data = await db.collection('usuario').add(formularioIng)
+                    e.target.reset()
+                    setformularioIng({nombre:'',apellido:'',password:''})
+                    obtenerDatos()
                 } catch (error) {
                     console.log(error)
                 }
@@ -88,21 +100,36 @@ const [local,setlocal]=useState(false)
             return false
         }
     }
-    const eliminarUsuario= (id)=>{
-        const arrayfiltrado = usuario.filter(elemt => elemt.id!==id)
-        setUsuario(arrayfiltrado)
+    const eliminarUsuario= async (id)=>{
+        console.log(id)
+        if(local){
+            const arrayfiltrado = usuario.filter(elemt => elemt.id!==id)
+            setUsuario(arrayfiltrado)
+        }else{
+            try {
+                const db = firebase.firestore()
+                await db.collection('usuario').doc(id).delete()
+            } catch (error) {
+                console.log(error)
+            }
+            
+        }
+        setModoEditar(false)
+        setformularioIng({nombre:'',apellido:'',password:''})
+        obtenerDatos()
+    }
+    const cancelarEditar= ()=>{
         setModoEditar(false)
         setformularioIng({nombre:'',apellido:'',password:''})
     }
 
     const editarUsuario= (id)=>{
         const arrayfiltrado = usuario.filter(elemt => elemt.id===id)
-        setIdEdit(id)
         setformularioIng(arrayfiltrado[0])
+        setIdEdit(id)
         setModoEditar(true)
     }
 
-    useEffect(() => {
     const obtenerDatos= async ()=>{
         try {
             const db = firebase.firestore()
@@ -115,12 +142,13 @@ const [local,setlocal]=useState(false)
            console.log(error) 
         }
     }
-
+useEffect(() => {
+    console.log("useefect de formulario")
     obtenerDatos()
 }, [])
 
   return (
-    <div>
+    <div className='text-secondary'>
         <div className="row">
             <div className="col-6">
                 <div className="row">
@@ -159,14 +187,23 @@ const [local,setlocal]=useState(false)
                             <input type="text" placeholder='Ingrese Apellido' name='apellido' className='form-control mb-2' value={formularioIng.apellido} onChange={(e)=>formulariollenado(e)} />
                             { formularioError.password===true && (<div className="invalid-feedbackaa text-danger">{formularioError.passwordT}</div>)} 
                             <input type="password" placeholder='Contraseña' name='password' className='form-control mb-2' value={formularioIng.password} onChange={(e)=>formulariollenado(e)} />
-                            
                             {
                                 modoEditar ? 
-                                    <button className='btn btn-warning btn-block ' type='submit'>Editar Usuario</button>
+                                    <div className="row">
+                                        <div className="col-6">
+                                            <a className='btn btn-secondary btn-block' onClick={()=>cancelarEditar()}>Cancelar</a>
+                                        </div>
+                                        <div className="col-6">
+                                            <button className='btn btn-warning btn-block' type='submit'>Editar Usuario</button>
+                                        </div>
+                                    </div>
                                 :
-                                    <button className='btn btn-success btn-block ' type='submit'>Agregar Cuenta</button>
+                                <div className="row">
+                                    <div className="col-12">
+                                        <button className='btn btn-success btn-block ' type='submit'>Agregar Cuenta</button>
+                                    </div>
+                                </div>   
                             }
-                            
                         </form>
                     </div>
                 </div>

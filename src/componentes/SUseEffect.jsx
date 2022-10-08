@@ -17,10 +17,11 @@ const SUseEffect = () => {
     }
 
     const obtenerDatosCivi = async ()=>{
+        // recoder activar la extencion de chrime
         const api= await fetch('https://age-of-empires-2-api.herokuapp.com/api/v1/civilizations')
         const cities = await api.json()
         setDatoApiC(cities.civilizations)
-        //console.log(user)
+        //console.log(cities.civilizations)
     }
     useEffect(() => {
       console.log("entro al componente de useefect")

@@ -17,15 +17,15 @@ import CompApiUseEf from './componentes/CompApiUseEf';
 function App() {
   return (
     
-      <div className='container mt-5 bg-dark1'>
+      <div className='container mt-5 text-light bg-dark'>
         <div className='btn-group'>
-          <Link to='/' className='btn btn-dark' >Inicio</Link>
-          <Link to='/register' className='btn btn-dark'>Registrar</Link>
-          <Link to='/login' className='btn btn-dark'>Iniciar Sessión</Link>
-          <Link to='/configuration' className='btn btn-dark'>Configuración</Link>
-          <Link to='/dashboard' className='btn btn-dark'>Escritorio</Link>
-          <Link to='/mantenedores' className='btn btn-dark' >Mantenedor</Link>
-          <Link to='/ejemplos' className='btn btn-dark' >Ejemplos</Link>
+          <NavLink to='/' className='btn btn-light' >Inicio</NavLink>
+          <NavLink to='/register' className='btn btn-light' activeClassName='active'>Registrar</NavLink>
+          <NavLink to='/login' className='btn btn-light' activeClassName='active'>Iniciar Sessión</NavLink>
+          <NavLink to='/configuration' className='btn btn-light' activeClassName='active'>Configuración</NavLink>
+          <NavLink to='/dashboard' className='btn btn-light' activeClassName='active'>Escritorio</NavLink>
+          <NavLink to='/mantenedores' className='btn btn-light' activeClassName='active'>Mantenedor</NavLink>
+          <NavLink to='/ejemplos' className='btn btn-light' activeClassName='active'>Ejemplos</NavLink>
         </div>
         <hr />
         <Switch>
