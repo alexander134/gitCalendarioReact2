@@ -1,10 +1,12 @@
 import React,{ useState } from 'react'
+import  {auth,db}  from '../firebase'
 
 
 const Login = (props) => {
   const [registro, setregistro] = useState(true)
+  const [errorFirebase, seterrorFirebase] = useState('')
   const [formularioError, setformularioError] = useState({emailT:'Debe agregar un email',passwordT:'Debe agregar una contraseña',passwordT2:'Debe ingresar nuevamente la contraseña'})
-  const [datos, setdatos] = useState([])
+  const [datos, setdatos] = useState({email:'',password:'',password2:''})
 
 
   const formulariollenado = e =>{
@@ -12,15 +14,53 @@ const Login = (props) => {
   }
   const procesarDatos = e =>{
     e.preventDefault()
+    seterrorFirebase('')
     if(validacionDatos()){
-      console.log("paso validacion");
+      if(!registro){
+        registarMail()
+      }else{
+        entrarCuenta()
+      }
+
     }else{
       console.log("NO paso validacion");
     }
   }
+const registarMail = React.useCallback(async()=>{
+  try {
+    const respuesta = await auth.createUserWithEmailAndPassword(datos.email,datos.password)
+    await db.collection('usuario').doc(respuesta.user.uid).set({
+      email:datos.email,
+      password:datos.password,
+      uid:respuesta.user.uid,
+      apellido:'',
+      nombre:''
+    })
+    setdatos({email:'',password:'',password2:''})
+    setregistro(false)
+  } catch (error) {
+    seterrorFirebase(error.message)
+    console.log(error);
+  }
+},[datos,setdatos])
+
+const entrarCuenta = React.useCallback(async()=>{
+  try {
+    const respuesta = await auth.signInWithEmailAndPassword(datos.email,datos.password)
+    console.log(respuesta);
+    //setdatos({email:'',password:'',password2:''})
+  } catch (error) {
+    seterrorFirebase(error.message)
+    console.log(error);
+  }
+},[datos,setdatos])
+
   const validacionDatos= ()=>{
-    let error={}
-    debugger;
+    let error={
+      email:false,
+      password:false,
+      password2:false
+    }
     if(Object.keys(datos).length !== 0){
       if(datos.email===undefined || datos.email ==='' || datos.email.trim()===''){
           error.email=true
@@ -36,8 +76,9 @@ const Login = (props) => {
       }else{
         error.password=false
       }
-      if(!registro){
-        error.passwordT2='Debe ingresar nuevamente la contraseña'
+
+
+      if(!registro && !error.password){
         if(datos.password2===undefined || datos.password2 ==='' || datos.password2.trim()===''){
             error.password2=true
         }else if(datos.password2.length < 6){
@@ -51,21 +92,10 @@ const Login = (props) => {
           error.password2=false
         }
       }
-    }else{
-        error.email=true
-        error.password=true
     }
     setformularioError({...formularioError,...error})
-    if(!error.email && !error.password){
-      if(registro){
-        return true
-      }else{
-        if(!error.password2){
-          return true
-        }else{
-          return false
-        }
-      }
+    if(!error.email && !error.password  && !error.password2){
+      return true
     }else{
       return false
     }
@@ -78,16 +108,17 @@ const Login = (props) => {
       <div className="row justify-content-center">
         <div className="col-12 col-sm-8 col-md-6 col-xl-4">
           <form onSubmit={procesarDatos}>
-            { formularioError.email===true && (<div className="invalid-feedbackaa text-danger">{formularioError.emailT}</div>)} 
-            <input type="email" className="form-control mb-2" placeholder='Ingrese un email' name='email' onChange={(e)=>formulariollenado(e)} />
+            {errorFirebase!=='' && (<div className="alert alert-danger">{errorFirebase}</div>)}
+            {formularioError.email===true && (<div className="invalid-feedbackaa text-danger">{formularioError.emailT}</div>)} 
+            <input type="email" className="form-control mb-2" placeholder='Ingrese un email' name='email' value={datos.email} onChange={(e)=>formulariollenado(e)} />
             { formularioError.password===true && (<div className="invalid-feedbackaa text-danger">{formularioError.passwordT}</div>)} 
-            <input type="password" className="form-control mb-2" placeholder='Ingrese password' name='password'  onChange={(e)=>formulariollenado(e)}/>
+            <input type="password" className="form-control mb-2" placeholder='Ingrese password' name='password' value={datos.password}  onChange={(e)=>formulariollenado(e)}/>
             { formularioError.password2===true && (<div className="invalid-feedbackaa text-danger">{formularioError.passwordT2}</div>)} 
-            { !registro && (<input type="password" className="form-control mb-2" placeholder='Repita password' name='password2'  onChange={(e)=>formulariollenado(e)}/>)}
+            { !registro && (<input type="password" className="form-control mb-2" placeholder='Repita password' value={datos.password2} name='password2'  onChange={(e)=>formulariollenado(e)}/>)}
             <button className={`btn btn-lg btn-sm btn-block ${registro ? "btn-info" : "btn-success"  }`}>{registro ? "Ingresar" : "Crear Cuenta" }</button>
-            <button className="btn btn-link btn-lg btn-sm btn-block" onClick={e=>setregistro(!registro)}>
-            {registro ? "¿Ya tienes cuenta?" : "Tengo Cuenta!" }</button>
           </form>
+          <button className="btn btn-link btn-lg btn-sm btn-block mt-2" onClick={e=>{setregistro(!registro);setdatos({...datos,password2:''});setformularioError({...formularioError,...{email:false,password:false,password2:false}})}}>
+          {registro ? "¿Ya tienes cuenta?" : "Tengo Cuenta!" }</button>
         </div>
       </div>
     </div>

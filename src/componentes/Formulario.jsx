@@ -1,6 +1,6 @@
 import { useState,useEffect } from 'react'
 import shortid from 'shortid'
-import {firebase} from '../firebase'
+import {firebase,db} from '../firebase'
 
 const Formulario = () => {
 const [formularioIng, setformularioIng] = useState({nombre:'',apellido:'',password:''})
@@ -24,7 +24,7 @@ const [local,setlocal]=useState(false)
                 setUsuario(arrayUsuEdit)
             }else{
                 try {
-                    const db = firebase.firestore()
+                    //const db = firebase.firestore()
                     await db.collection('usuario').doc(idEdit).update({nombre:formularioIng.nombre,apellido:formularioIng.apellido,password:formularioIng.password})
                 } catch (error) {
                     console.log(error)
@@ -51,7 +51,7 @@ const [local,setlocal]=useState(false)
                 return
             }else{
                 try {
-                    const db = firebase.firestore()
+                    //const db = firebase.firestore()
                     const data = await db.collection('usuario').add(formularioIng)
                     e.target.reset()
                     setformularioIng({nombre:'',apellido:'',password:''})
@@ -107,7 +107,7 @@ const [local,setlocal]=useState(false)
             setUsuario(arrayfiltrado)
         }else{
             try {
-                const db = firebase.firestore()
+                //const db = firebase.firestore()
                 await db.collection('usuario').doc(id).delete()
             } catch (error) {
                 console.log(error)
@@ -119,6 +119,7 @@ const [local,setlocal]=useState(false)
         obtenerDatos()
     }
     const cancelarEditar= ()=>{
+        setformularioError({...formularioError,...{nombre:false,apellido:false,password:false}})
         setModoEditar(false)
         setformularioIng({nombre:'',apellido:'',password:''})
     }
@@ -132,7 +133,7 @@ const [local,setlocal]=useState(false)
 
     const obtenerDatos= async ()=>{
         try {
-            const db = firebase.firestore()
+            //const db = firebase.firestore()
             const data = await db.collection('usuario').get()
             console.log(data.docs)
             
