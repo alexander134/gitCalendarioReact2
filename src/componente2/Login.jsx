@@ -1,5 +1,6 @@
 import React,{ useState } from 'react'
 import  {auth,db}  from '../firebase'
+import { withRouter } from 'react-router-dom'
 
 
 const Login = (props) => {
@@ -48,12 +49,13 @@ const entrarCuenta = React.useCallback(async()=>{
   try {
     const respuesta = await auth.signInWithEmailAndPassword(datos.email,datos.password)
     console.log(respuesta);
+    props.history.push('/dashboard')
     //setdatos({email:'',password:'',password2:''})
   } catch (error) {
     seterrorFirebase(error.message)
     console.log(error);
   }
-},[datos,setdatos])
+},[datos,setdatos,props])
 
   const validacionDatos= ()=>{
     let error={
@@ -127,4 +129,4 @@ const entrarCuenta = React.useCallback(async()=>{
 
 }
 
-export default Login
+export default withRouter(Login)
