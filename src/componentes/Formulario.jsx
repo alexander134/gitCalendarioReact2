@@ -1,6 +1,8 @@
 import { useState,useEffect } from 'react'
 import shortid from 'shortid'
 import {firebase,db} from '../firebase'
+import moment from 'moment'
+import 'moment/locale/es'
 
 const Formulario = () => {
 const [formularioIng, setformularioIng] = useState({nombre:'',apellido:'',password:''})
@@ -44,7 +46,7 @@ const [local,setlocal]=useState(false)
         if(validacionDatos()){
             if(local){
                 //setUsuario([...usuario, {...formularioIng, id:usuario.length+1}])
-                debugger;
+                //debugger;
                 setUsuario([...usuario, {...formularioIng, id:shortid.generate()}])
                 e.target.reset()
                 setformularioIng({nombre:'',apellido:'',password:''})
@@ -52,7 +54,7 @@ const [local,setlocal]=useState(false)
             }else{
                 try {
                     //const db = firebase.firestore()
-                    const data = await db.collection('usuario').add(formularioIng)
+                    const data = await db.collection('usuario').add({...formularioIng,FechaComputo:Date.now()})
                     e.target.reset()
                     setformularioIng({nombre:'',apellido:'',password:''})
                     obtenerDatos()
@@ -160,7 +162,7 @@ useEffect(() => {
                         usuario.length!==0 ? (
                                 usuario.map((elem)=>(
                                     <li  className='list-group-item' key={elem.id}>
-                                        <span className='lead'> {elem.nombre} - {elem.apellido} - {elem.password}</span>
+                                        <span className='lead'> {elem.nombre} - {elem.apellido} - {elem.password} - {elem.fechaComputo && moment(elem.fechaComputo).format('LLL') }</span>
                                         <button className='btn btn-danger btn-sm float-right mx-2' onClick={()=>eliminarUsuario(elem.id)}>Eliminar</button>
                                         <button className='btn btn-warning btn-sm float-right' onClick={()=>editarUsuario(elem.id)}>Editar</button>
                                     </li>

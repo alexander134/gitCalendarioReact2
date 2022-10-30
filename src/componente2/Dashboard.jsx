@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import shortid from 'shortid'
 import {firebase,db} from '../firebase'
+import moment from 'moment'
+import 'moment/locale/es'
 
 const Dashboard = (props) => {
   const [formularioIng, setformularioIng] = useState({nombreAct:'',descripcion:'',fechaAct:''})
@@ -18,7 +20,7 @@ const Dashboard = (props) => {
     if(validacionDatos()){
         try {
             //const db = firebase.firestore()
-            await db.collection('Act-'+props.usuarioid).doc(idEdit).update({nombreAct:formularioIng.nombreAct,descripcion:formularioIng.descripcion,fechaAct:formularioIng.fechaAct})
+            await db.collection('Act-'+props.usuarioid).doc(idEdit).update({nombreAct:formularioIng.nombreAct,descripcion:formularioIng.descripcion,fechaAct:formularioIng.fechaAct,ultimaActFecha:Date.now()})
         } catch (error) {
             console.log(error)
         }
@@ -36,7 +38,7 @@ const procesarDatos = async (e)=>{
     if(validacionDatos()){
       try {
           //const db = firebase.firestore()
-          const data = await db.collection('Act-'+props.usuarioid).add(formularioIng)
+          const data = await db.collection('Act-'+props.usuarioid).add({...formularioIng,FechaComputo:Date.now()})
           e.target.reset()
           setformularioIng({nombreAct:'',descripcion:'',fechaAct:''})
           obtenerDatos()

@@ -35,7 +35,8 @@ const registarMail = React.useCallback(async()=>{
       password:datos.password,
       uid:respuesta.user.uid,
       apellido:'',
-      nombre:''
+      nombre:'',
+      fechaComputo: Date.now()
     })
     setdatos({email:'',password:'',password2:''})
     setregistro(false)
