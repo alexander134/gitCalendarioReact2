@@ -80,7 +80,7 @@ function App(props) {
             <Configuration/>
           </Route>
           <Route path='/dashboard'>
-            <Dashboard/>
+            <Dashboard usuarioid={datosUsuario? datosUsuario.uid: null}/>
           </Route>
           <Route path='/mantenedores'>
             <Mantenedores/>
