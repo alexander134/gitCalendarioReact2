@@ -12,6 +12,7 @@ import Configuration from './componente2/Configuration';
 import Mantenedores from './componente2/Mantenedores';
 import Dashboard from './componente2/Dashboard';
 import Ejemplos from './componentes/Ejemplos';
+import Reset from './componente2/Reset';
 import CompApiUseEf from './componentes/CompApiUseEf';
 import Navbar from './componente2/Navbar'
 import {auth} from './firebase'
@@ -46,6 +47,7 @@ function App(props) {
           }else if(props.history.location.pathname==='/'){
 
           }else if(props.history.location.pathname==='/ejemplos'){
+          }else if(props.history.location.pathname==='/reset'){
 
           }else{
             props.history.push('/login')
@@ -88,6 +90,9 @@ function App(props) {
           <Route path='/ejemplos'>
             <Ejemplos/>
           </Route>
+          <Route path='/reset'>
+            <Reset/>
+          </Route>
         </Switch>
       </div>
     
@@ -95,7 +100,7 @@ function App(props) {
     <div className='container mt-5- text-light- bg-dark-'>
       <h1>CARGANDO</h1>
     </div>
-  );
+  )
 }
 
 export default withRouter(App)

@@ -150,6 +150,14 @@ useEffect(() => {
     obtenerDatos()
 }, [])
 
+const functionCollapse = (e)=>{
+    let els = document.getElementsByClassName('targetaGeneral');
+    Array.from(els).forEach((el) => {
+        el.classList.add("d-none")
+    });
+    document.getElementsByClassName(e.target.getAttribute("parametro-busq"))[0].classList.remove("d-none")
+}
+
   return (
     <div className='text-secondary'>
         <div className="row">
@@ -160,12 +168,22 @@ useEffect(() => {
                     <ul className='list-group'>
                     {
                         usuario.length!==0 ? (
-                                usuario.map((elem)=>(
-                                    <li  className='list-group-item' key={elem.id}>
-                                        <span className='lead'> {elem.nombre} - {elem.apellido} - {elem.password} - {elem.fechaComputo && moment(elem.fechaComputo).format('LLL') }</span>
-                                        <button className='btn btn-danger btn-sm float-right mx-2' onClick={()=>eliminarUsuario(elem.id)}>Eliminar</button>
-                                        <button className='btn btn-warning btn-sm float-right' onClick={()=>editarUsuario(elem.id)}>Editar</button>
-                                    </li>
+                                usuario.map((elem,index)=>(
+                                    <div key={elem.id}>
+                                    <li  className='list-group-item' parametro-busq={`panel-${index}`}  onClick={(e)=>functionCollapse(e)}  >{elem.email?elem.email:elem.nombre}</li>
+                                    <div className={ `card-body targetaGeneral panel-${index} d-none bg-light`}>
+                                        <div className="row">
+                                            <div className="col-12">
+                                                <span className='lead'><p>Nombre: {elem.nombre}</p><p>Apellido: {elem.apellido}</p><p>Contraseña: {elem.password}</p><p>Fecha Creación: {elem.fechaComputo && moment(elem.fechaComputo).format('LLL') }</p></span>
+                                            </div>
+                                            <div className="col-12">
+                                                <button className='btn btn-danger btn-sm float-right mx-2' onClick={()=>eliminarUsuario(elem.id)}>Eliminar</button>
+                                                <button className='btn btn-warning btn-sm float-right' onClick={()=>editarUsuario(elem.id)}>Editar</button>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
                                 )) 
                         ) : (
                             <li  className='list-group-item text-center' >No hay Usuarios Registrados</li>

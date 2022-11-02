@@ -120,8 +120,17 @@ const entrarCuenta = React.useCallback(async()=>{
             { !registro && (<input type="password" className="form-control mb-2" placeholder='Repita password' value={datos.password2} name='password2'  onChange={(e)=>formulariollenado(e)}/>)}
             <button className={`btn btn-lg btn-sm btn-block ${registro ? "btn-info" : "btn-success"  }`}>{registro ? "Ingresar" : "Crear Cuenta" }</button>
           </form>
-          <button className="btn btn-link btn-lg btn-sm btn-block mt-2" onClick={e=>{setregistro(!registro);setdatos({...datos,password2:''});setformularioError({...formularioError,...{email:false,password:false,password2:false}})}}>
+          <div className="row">
+            <div className={`col-${registro ?'6':'12'}`}>
+            <button className="btn btn-link btn-lg btn-sm btn-block mt-2" onClick={e=>{setregistro(!registro);setdatos({...datos,password2:''});setformularioError({...formularioError,...{email:false,password:false,password2:false}})}}>
           {registro ? "¿Ya tienes cuenta?" : "Tengo Cuenta!" }</button>
+            </div>
+            {registro && (<div className="col-6"> 
+            <button className="btn btn-danger btn-lg btn-sm btn-block mt-2" onClick={()=>props.history.push('/reset')}>
+            Recuperar Contraseña!</button>
+            </div>)}
+          </div>
+          
         </div>
       </div>
     </div>

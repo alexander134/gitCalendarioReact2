@@ -10,6 +10,8 @@ const Dashboard = (props) => {
   const [modoEditar,setModoEditar]= useState(false)
   const [idEdit,setIdEdit]=useState('')
   const [actividades, setActividades] = useState([])
+  const [btnActividades, setBtnActividades] = useState(true)
+  const [UltActividad, setUltActividad] = useState(null)
 
   const formulariollenado = (e)=>{
       setformularioIng({...formularioIng,[e.target.name]:e.target.value})
@@ -114,11 +116,37 @@ const validacionDatos= ()=>{
   const obtenerDatos= async ()=>{
     try {
         //const db = firebase.firestore()
-        const data = await db.collection('Act-'+props.usuarioid).get()
-        console.log(data.docs)
-        
+        const data = await db.collection('Act-'+props.usuarioid).limit(2).orderBy('FechaComputo','desc').get()
+        //debugger
+        //sconsole.log(data.docs)
+        setUltActividad(data.docs[data.docs.length - 1])
+        const query = await db.collection('Act-'+props.usuarioid).limit(2).orderBy('FechaComputo','desc').startAfter(data.docs[data.docs.length - 1]).get()
+        if(query.empty){
+            setBtnActividades(true)
+        }else{
+            setBtnActividades(false)
+        }
         const arrayData =  data.docs.map(doc => ({ id:doc.id,...doc.data()}))
         setActividades(arrayData)
+        
+    } catch (error) {
+       console.log(error) 
+    }
+}
+  const masAct= async ()=>{
+    try {
+        //const db = firebase.firestore()
+        const data = await db.collection('Act-'+props.usuarioid).limit(2).orderBy('FechaComputo','desc').startAfter(UltActividad).get()
+        const query = await db.collection('Act-'+props.usuarioid).limit(2).orderBy('FechaComputo','desc').startAfter(data.docs[data.docs.length - 1]).get()
+        if(query.empty){
+            setBtnActividades(true)
+        }else{
+            setBtnActividades(false)
+        }
+        
+        const arrayData =  data.docs.map(doc => ({ id:doc.id,...doc.data()}))
+        setActividades([...actividades,...arrayData])
+        setUltActividad(data.docs[data.docs.length - 1])
     } catch (error) {
        console.log(error) 
     }
@@ -136,21 +164,22 @@ useEffect(() => {
                 <div className="row">
                     <div className="col-12 text-center pt-2"><h4>Lista Actividades</h4></div>
                     <div className="col-12">
-                    <ul className='list-group'>
-                    {
-                        actividades.length!==0 ? (
-                          actividades.map((elem)=>(
-                                    <li  className='list-group-item' key={elem.id}>
-                                        <span className='lead'> {elem.nombreAct} - {elem.descripcion} - {elem.fechaAct}</span>
-                                        <button className='btn btn-danger btn-sm float-right mx-2' onClick={()=>eliminarActividad(elem.id)}>Eliminar</button>
-                                        <button className='btn btn-warning btn-sm float-right' onClick={()=>editarActividad(elem.id)}>Editar</button>
-                                    </li>
-                                )) 
-                        ) : (
-                            <li  className='list-group-item text-center' >No hay Actividades Registradas</li>
-                        )
-                    }
-                    </ul>
+                        <ul className='list-group'>
+                        {
+                            actividades.length!==0 ? (
+                            actividades.map((elem)=>(
+                                        <li  className='list-group-item' key={elem.id}>
+                                            <span className='lead'> {elem.nombreAct} - {elem.descripcion} - {elem.fechaAct}</span>
+                                            <button className='btn btn-danger btn-sm float-right mx-2' onClick={()=>eliminarActividad(elem.id)}>Eliminar</button>
+                                            <button className='btn btn-warning btn-sm float-right' onClick={()=>editarActividad(elem.id)}>Editar</button>
+                                        </li>
+                                    )) 
+                            ) : (
+                                <li  className='list-group-item text-center' >No hay Actividades Registradas</li>
+                            )
+                        }
+                        </ul>
+                        <button className='btn btn-info btn-block mt-2 btn-sm' onClick={()=>masAct()} disabled={btnActividades}>Mas actividades</button>
                     </div>
                 </div>
             </div>
