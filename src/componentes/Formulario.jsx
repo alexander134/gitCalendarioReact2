@@ -151,11 +151,22 @@ useEffect(() => {
 }, [])
 
 const functionCollapse = (e)=>{
-    let els = document.getElementsByClassName('targetaGeneral');
+    let els = document.getElementsByClassName('targetaGeneral');//debugger;
+    let titulo = document.getElementsByClassName('titulo');
     Array.from(els).forEach((el) => {
         el.classList.add("d-none")
     });
-    document.getElementsByClassName(e.target.getAttribute("parametro-busq"))[0].classList.remove("d-none")
+    if(e.target.classList.contains('open')){
+        e.target.classList.remove("open")
+        document.getElementsByClassName(e.target.getAttribute("parametro-busq"))[0].classList.add("d-none")
+    }else{
+        Array.from(titulo).forEach((el) => {
+            el.classList.remove("open")
+        });
+        e.target.classList.add("open")
+        document.getElementsByClassName(e.target.getAttribute("parametro-busq"))[0].classList.remove("d-none")
+    }
+    
 }
 
   return (
@@ -170,8 +181,8 @@ const functionCollapse = (e)=>{
                         usuario.length!==0 ? (
                                 usuario.map((elem,index)=>(
                                     <div key={elem.id}>
-                                    <li  className='list-group-item' parametro-busq={`panel-${index}`}  onClick={(e)=>functionCollapse(e)}  >{elem.email?elem.email:elem.nombre}</li>
-                                    <div className={ `card-body targetaGeneral panel-${index} d-none bg-light`}>
+                                    <li  className='list-group-item titulo' parametro-busq={`panel-${index}`}  onClick={(e)=>functionCollapse(e)} style={{cursor:'pointer'}} >{elem.email?elem.email:elem.nombre}</li>
+                                    <div className={ `card-body targetaGeneral panel-${index} d-none bg-light`} >
                                         <div className="row">
                                             <div className="col-12">
                                                 <span className='lead'><p>Nombre: {elem.nombre}</p><p>Apellido: {elem.apellido}</p><p>Contraseña: {elem.password}</p><p>Fecha Creación: {elem.fechaComputo && moment(elem.fechaComputo).format('LLL') }</p></span>
@@ -207,7 +218,7 @@ const functionCollapse = (e)=>{
                             { formularioError.apellido===true && (<div className="invalid-feedbackaa text-danger">{formularioError.apellidoT}</div>)} 
                             <input type="text" placeholder='Ingrese Apellido' name='apellido' className='form-control mb-2' value={formularioIng.apellido} onChange={(e)=>formulariollenado(e)} />
                             { formularioError.password===true && (<div className="invalid-feedbackaa text-danger">{formularioError.passwordT}</div>)} 
-                            <input type="password" placeholder='Contraseña' name='password' className='form-control mb-2' value={formularioIng.password} onChange={(e)=>formulariollenado(e)} />
+                            <input type="password" autoComplete="off" placeholder='Contraseña' name='password' className='form-control mb-2' value={formularioIng.password} onChange={(e)=>formulariollenado(e)} />
                             {
                                 modoEditar ? 
                                     <div className="row">

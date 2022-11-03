@@ -115,9 +115,9 @@ const entrarCuenta = React.useCallback(async()=>{
             {formularioError.email===true && (<div className="invalid-feedbackaa text-danger">{formularioError.emailT}</div>)} 
             <input type="email" className="form-control mb-2" placeholder='Ingrese un email' name='email' value={datos.email} onChange={(e)=>formulariollenado(e)} />
             { formularioError.password===true && (<div className="invalid-feedbackaa text-danger">{formularioError.passwordT}</div>)} 
-            <input type="password" className="form-control mb-2" placeholder='Ingrese password' name='password' value={datos.password}  onChange={(e)=>formulariollenado(e)}/>
+            <input type="password" autoComplete="off" className="form-control mb-2" placeholder='Ingrese password' name='password' value={datos.password}  onChange={(e)=>formulariollenado(e)}/>
             { formularioError.password2===true && (<div className="invalid-feedbackaa text-danger">{formularioError.passwordT2}</div>)} 
-            { !registro && (<input type="password" className="form-control mb-2" placeholder='Repita password' value={datos.password2} name='password2'  onChange={(e)=>formulariollenado(e)}/>)}
+            { !registro && (<input type="password" autoComplete="off" className="form-control mb-2" placeholder='Repita password' value={datos.password2} name='password2'  onChange={(e)=>formulariollenado(e)}/>)}
             <button className={`btn btn-lg btn-sm btn-block ${registro ? "btn-info" : "btn-success"  }`}>{registro ? "Ingresar" : "Crear Cuenta" }</button>
           </form>
           <div className="row">
