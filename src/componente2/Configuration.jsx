@@ -7,12 +7,15 @@ const Configuration = (props) => {
 const diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado','Domingo'];
 
 const funcArrayMesActual = (num) =>new Array(num.cantidadDias).fill(num).map((obj, i) => {
-    return  {numeroDia:i + 1,diaDSemana:new Date(obj.anio,obj.mes,i + 1).toLocaleDateString('es-ES', { weekday: 'long' }),fecha:new Date(obj.anio,obj.mes,i + 1)}
+    return  {numeroDia:i + 1,diaDSemana:new Date(obj.anio,obj.mes,i + 1).toLocaleDateString('es-ES', { weekday: 'long' }),nombreMes:new Date(obj.anio,obj.mes,i + 1).toLocaleDateString('es-ES', { month: 'long' }),fecha:new Date(obj.anio,obj.mes,i + 1)}
   })
 
 
-const llenado=(moonLanding,anioA,mesA)=>{
+const llenado=(moonLanding)=>{
   debugger
+
+  let anioA =moonLanding.getFullYear()
+  let mesA =moonLanding.getMonth()
   console.log("FECHA:"+moonLanding);
   console.log("AÑO:"+anioA);
   console.log("MES:"+mesA);
@@ -23,9 +26,27 @@ const llenado=(moonLanding,anioA,mesA)=>{
     mesSiguiente:Object()
   }
 
-  tresMeses.mesAnterior={cantidadDias:new Date(anioA, mesA, 0).getDate(),anio:new Date(anioA, mesA, 0).getFullYear(),mes:moonLanding.getMonth()-1,nombreMes:new Date(anioA, mesA, 0).toLocaleDateString('es-ES', { month: 'long' })}
-  tresMeses.mesActual={cantidadDias:new Date(anioA, mesA+1, 0).getDate(),anio:moonLanding.getFullYear(),mes:moonLanding.getMonth(),nombreMes:moonLanding.toLocaleDateString('es-ES', { month: 'long' })}
-  tresMeses.mesSiguiente={cantidadDias:new Date(anioA, mesA+2, 0).getDate(),anio:new Date(anioA, mesA+2, 0).getFullYear(),mes:moonLanding.getMonth()+1,nombreMes:new Date(anioA, mesA+2, 0).toLocaleDateString('es-ES', { month: 'long' })}
+  tresMeses.mesAnterior={
+    fecha:new Date(anioA, mesA, 0),
+    cantidadDias:new Date(anioA, mesA, 0).getDate(),
+    anio:new Date(anioA, mesA, 0).getFullYear(),
+    mes:moonLanding.getMonth()-1,
+    nombreMes:new Date(anioA, mesA, 0).toLocaleDateString('es-ES', { month: 'long' })
+  }
+  tresMeses.mesActual={
+    fecha:new Date(anioA, mesA+1, 0),
+    cantidadDias:new Date(anioA, mesA+1, 0).getDate(),
+    anio:moonLanding.getFullYear(),
+    mes:moonLanding.getMonth(),
+    nombreMes:moonLanding.toLocaleDateString('es-ES', { month: 'long' })
+  }
+  tresMeses.mesSiguiente={
+    fecha:new Date(anioA, mesA+2, 0),
+    cantidadDias:new Date(anioA, mesA+2, 0).getDate(),
+    anio:new Date(anioA, mesA+2, 0).getFullYear(),
+    mes:moonLanding.getMonth()+1,
+    nombreMes:new Date(anioA, mesA+2, 0).toLocaleDateString('es-ES', { month: 'long' })
+  }
 
   tresMeses.mesActual.arrayDay=funcArrayMesActual(tresMeses.mesActual)
   tresMeses.mesAnterior.arrayDay=funcArrayMesActual(tresMeses.mesAnterior)
@@ -35,7 +56,7 @@ const llenado=(moonLanding,anioA,mesA)=>{
   tresMeses.mesActual.arrayDay=[...tresMeses.mesActual.arrayDay,
   ...tresMeses.mesSiguiente.arrayDay.map((elem)=>{
         if(flag){
-          if(elem.diaDSemana=="domingo"){
+          if(elem.diaDSemana==="domingo"){
             flag=false
           }
           return elem
@@ -47,7 +68,7 @@ const llenado=(moonLanding,anioA,mesA)=>{
     flag=true;
     tresMeses.mesActual.arrayDay=[...tresMeses.mesAnterior.arrayDay.reverse().map((elem)=>{
       if(flag){
-        if(elem.diaDSemana=="lunes"){
+        if(elem.diaDSemana==="lunes"){
           flag=false
         }
         return elem
@@ -68,7 +89,7 @@ addMonths(new Date(),'+')
 addMonths(new Date(),'-')
 
 //console.clear()
-const [mes, setMes] = useState({tresMeses:llenado(new Date(),new Date().getFullYear(),new Date().getMonth())})
+const [mes, setMes] = useState({tresMeses:llenado(new Date())})
 
   return (
     <div className='container-fluid'>
@@ -77,7 +98,7 @@ const [mes, setMes] = useState({tresMeses:llenado(new Date(),new Date().getFullY
         <div className="col-8 offset-2 align-self-center text-center p-1">
             <div className="card">
               <div className="card-body p-0">
-                <h5 className="card-title text-secondary m-0">2022</h5>
+                <h5 className="card-title text-secondary m-0">{mes.tresMeses.mesActual.anio}</h5>
               </div>
           </div>
         </div>
@@ -87,21 +108,22 @@ const [mes, setMes] = useState({tresMeses:llenado(new Date(),new Date().getFullY
           <div className="card bg-secondary">
             <div className="card-body p-1">
               <h5 className="card-title m-1" style={{cursor:'pointer'}}
-               onClick={()=>setMes(addMonths(new Date(),'+'),addMonths(new Date(),'+').getFullYear(),addMonths(new Date(),'+').getMonth())}>Oct</h5>
+               onClick={()=>setMes({tresMeses:llenado(mes.tresMeses.mesAnterior.fecha)})}>{mes.tresMeses.mesAnterior.nombreMes}</h5>
             </div>
           </div>
         </div>
         <div className="col-8 text-center p-1">
           <div className="card">
             <div className="card-body p-1">
-              <h5 className="card-title text-secondary m-1">Noviembre</h5>
+              <h5 className="card-title text-secondary m-1">{mes.tresMeses.mesActual.nombreMes}</h5>
             </div>
           </div>
         </div>
       <div className="col p-1  text-center">
         <div className="card bg-secondary">
           <div className="card-body p-1">
-            <h5 className="card-title m-1">Dic</h5>
+          <h5 className="card-title m-1" style={{cursor:'pointer'}}
+               onClick={()=>setMes({tresMeses:llenado(mes.tresMeses.mesSiguiente.fecha)})}>{mes.tresMeses.mesSiguiente.nombreMes}</h5>
           </div>
         </div>
       </div>
@@ -138,7 +160,7 @@ const [mes, setMes] = useState({tresMeses:llenado(new Date(),new Date().getFullY
                   <div className="card">
                     <div className="card-body p-1">
                       <h5 className="card-title text-secondary m-1">{dia.numeroDia}</h5>
-                      <p className="card-text text-muted m-1">PRUEBA2</p>
+                      <p className="card-text text-muted m-1">{dia.nombreMes}</p>
                       <div className='d-flex justify-content-around'>
                       <button type='button' className="btn btn-sm btn-dark p-1">Ver</button>
                       </div>
