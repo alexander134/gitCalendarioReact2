@@ -5,7 +5,11 @@ const Configuration = (props) => {
 const diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado','Domingo'];
 
 const funcArrayMesActual = (num) =>new Array(num.cantidadDias).fill(num).map((obj, i) => {
-    return  {numeroDia:i + 1,diaDSemana:new Date(obj.anio,obj.mes,i + 1).toLocaleDateString('es-ES', { weekday: 'long' }),nombreMes:new Date(obj.anio,obj.mes,i + 1).toLocaleDateString('es-ES', { month: 'long' }),fecha:new Date(obj.anio,obj.mes,i + 1)}
+    return  {
+      numeroDia:i + 1,
+      diaDSemana:new Date(obj.anio,obj.mes===-1?0:obj.mes===12?11:obj.mes,i + 1).toLocaleDateString('es-ES', { weekday: 'long' }),
+      nombreMes:new Date(obj.anio,obj.mes===-1?0:obj.mes===12?11:obj.mes,i + 1).toLocaleDateString('es-ES', { month: 'long' }),
+      fecha:new Date(obj.anio,obj.mes===-1?0:obj.mes===12?11:obj.mes,i + 1)}
   })
 
 
