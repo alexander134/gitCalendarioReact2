@@ -11,73 +11,72 @@ const funcArrayMesActual = (num) =>new Array(num.cantidadDias).fill(num).map((ob
   })
 
 
-const llenado=(moonLanding)=>{
-  debugger
-
-  let anioA =moonLanding.getFullYear()
-  let mesA =moonLanding.getMonth()
-  console.log("FECHA:"+moonLanding);
-  console.log("AÑO:"+anioA);
-  console.log("MES:"+mesA);
-
-  const tresMeses={
-    mesAnterior:Object(),
-    mesActual:Object(),
-    mesSiguiente:Object()
-  }
-
-  tresMeses.mesAnterior={
-    fecha:new Date(anioA, mesA, 0),
-    cantidadDias:new Date(anioA, mesA, 0).getDate(),
-    anio:new Date(anioA, mesA, 0).getFullYear(),
-    mes:moonLanding.getMonth()-1,
-    nombreMes:new Date(anioA, mesA, 0).toLocaleDateString('es-ES', { month: 'long' })
-  }
-  tresMeses.mesActual={
-    fecha:new Date(anioA, mesA+1, 0),
-    cantidadDias:new Date(anioA, mesA+1, 0).getDate(),
-    anio:moonLanding.getFullYear(),
-    mes:moonLanding.getMonth(),
-    nombreMes:moonLanding.toLocaleDateString('es-ES', { month: 'long' })
-  }
-  tresMeses.mesSiguiente={
-    fecha:new Date(anioA, mesA+2, 0),
-    cantidadDias:new Date(anioA, mesA+2, 0).getDate(),
-    anio:new Date(anioA, mesA+2, 0).getFullYear(),
-    mes:moonLanding.getMonth()+1,
-    nombreMes:new Date(anioA, mesA+2, 0).toLocaleDateString('es-ES', { month: 'long' })
-  }
-
-  tresMeses.mesActual.arrayDay=funcArrayMesActual(tresMeses.mesActual)
-  tresMeses.mesAnterior.arrayDay=funcArrayMesActual(tresMeses.mesAnterior)
-  tresMeses.mesSiguiente.arrayDay=funcArrayMesActual(tresMeses.mesSiguiente)
-  
-  let flag=true;
-  tresMeses.mesActual.arrayDay=[...tresMeses.mesActual.arrayDay,
-  ...tresMeses.mesSiguiente.arrayDay.map((elem)=>{
+  const llenado=(moonLanding)=>{
+    //debugger
+    let anioA =moonLanding.getFullYear()
+    let mesA =moonLanding.getMonth()
+    console.log("FECHA:"+moonLanding);
+    console.log("AÑO:"+anioA);
+    console.log("MES:"+mesA);
+    const tresMeses={
+      mesAnterior:Object(),
+      mesActual:Object(),
+      mesSiguiente:Object()
+    }
+    tresMeses.mesAnterior={
+      fecha:new Date(anioA, mesA, 0),
+      cantidadDias:new Date(anioA, mesA, 0).getDate(),
+      anio:new Date(anioA, mesA, 0).getFullYear(),
+      mes:moonLanding.getMonth()-1,
+      nombreMes:new Date(anioA, mesA, 0).toLocaleDateString('es-ES', { month: 'long' })
+    }
+    tresMeses.mesActual={
+      fecha:new Date(anioA, mesA+1, 0),
+      cantidadDias:new Date(anioA, mesA+1, 0).getDate(),
+      anio:moonLanding.getFullYear(),
+      mes:moonLanding.getMonth(),
+      nombreMes:moonLanding.toLocaleDateString('es-ES', { month: 'long' })
+    }
+    tresMeses.mesSiguiente={
+      fecha:new Date(anioA, mesA+2, 0),
+      cantidadDias:new Date(anioA, mesA+2, 0).getDate(),
+      anio:new Date(anioA, mesA+2, 0).getFullYear(),
+      mes:moonLanding.getMonth()+1,
+      nombreMes:new Date(anioA, mesA+2, 0).toLocaleDateString('es-ES', { month: 'long' })
+    }
+    tresMeses.mesActual.arrayDay=funcArrayMesActual(tresMeses.mesActual)
+    tresMeses.mesAnterior.arrayDay=funcArrayMesActual(tresMeses.mesAnterior)
+    tresMeses.mesSiguiente.arrayDay=funcArrayMesActual(tresMeses.mesSiguiente)
+    let flag= tresMeses.mesActual.arrayDay[tresMeses.mesActual.arrayDay.length-1].diaDSemana=='domingo' ? false:true;
+    //let flag= true
+    if(flag){
+    tresMeses.mesActual.arrayDay=[...tresMeses.mesActual.arrayDay,
+    ...tresMeses.mesSiguiente.arrayDay.map((elem)=>{
+          if(flag){
+            if(elem.diaDSemana==="domingo"){
+              flag=false
+            }
+            return elem
+          }return undefined
+      }).filter(element => {
+        return element !== undefined;
+      })]
+    }
+      flag= tresMeses.mesActual.arrayDay[0].diaDSemana=='lunes' ? false:true;
+      if(flag){
+      tresMeses.mesActual.arrayDay=[...tresMeses.mesAnterior.arrayDay.reverse().map((elem)=>{
         if(flag){
-          if(elem.diaDSemana==="domingo"){
+          if(elem.diaDSemana==="lunes"){
             flag=false
           }
           return elem
         }return undefined
     }).filter(element => {
       return element !== undefined;
-    })]
-
-    flag=true;
-    tresMeses.mesActual.arrayDay=[...tresMeses.mesAnterior.arrayDay.reverse().map((elem)=>{
-      if(flag){
-        if(elem.diaDSemana==="lunes"){
-          flag=false
-        }
-        return elem
-      }return undefined
-  }).filter(element => {
-    return element !== undefined;
-  }).reverse(),...tresMeses.mesActual.arrayDay]
-  return tresMeses
-}
+    }).reverse(),...tresMeses.mesActual.arrayDay]
+  }
+    return tresMeses
+  }
 
 function addMonths( date = new Date(),tpo) {
   tpo==='+'?
