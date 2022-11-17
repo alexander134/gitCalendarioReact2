@@ -1,6 +1,4 @@
-import { clear } from '@testing-library/user-event/dist/clear';
 import React, { Fragment, useState } from 'react'
-import { createRef } from 'react';
 
 const Configuration = (props) => {
 
