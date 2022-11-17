@@ -10,12 +10,8 @@ const funcArrayMesActual = (num) =>new Array(num.cantidadDias).fill(num).map((ob
 
 
   const llenado=(moonLanding)=>{
-    //debugger
     let anioA =moonLanding.getFullYear()
     let mesA =moonLanding.getMonth()
-    console.log("FECHA:"+moonLanding);
-    console.log("AÑO:"+anioA);
-    console.log("MES:"+mesA);
     const tresMeses={
       mesAnterior:Object(),
       mesActual:Object(),
@@ -46,7 +42,6 @@ const funcArrayMesActual = (num) =>new Array(num.cantidadDias).fill(num).map((ob
     tresMeses.mesAnterior.arrayDay=funcArrayMesActual(tresMeses.mesAnterior)
     tresMeses.mesSiguiente.arrayDay=funcArrayMesActual(tresMeses.mesSiguiente)
     let flag= tresMeses.mesActual.arrayDay[tresMeses.mesActual.arrayDay.length-1].diaDSemana=='domingo' ? false:true;
-    //let flag= true
     if(flag){
     tresMeses.mesActual.arrayDay=[...tresMeses.mesActual.arrayDay,
     ...tresMeses.mesSiguiente.arrayDay.map((elem)=>{
