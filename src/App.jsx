@@ -1,5 +1,6 @@
 import React,{useState,useEffect} from 'react'
 import Formulario from './componentes/Formulario';
+ import {} from "../src/estilos/estilos.css";
 import {
   Switch,
   Route,

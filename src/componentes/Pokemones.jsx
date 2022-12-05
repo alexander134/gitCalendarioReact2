@@ -2,23 +2,18 @@ import React, { useEffect } from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import { obtenerPokemonesAccion,siguentePokemonesAccion ,anteriorPokemonesAccion,detallePokemonAccion} from "../redux/pokeDucks";
 import DetallePoke from './DetallePoke';
-
-
 const Pokemones = () => {
   const dispatch=useDispatch()
   const pkm =useSelector(store=>store.pokemones.results)
   const pkmAnt= useSelector(store=>store.pokemones.previous)
   const pkmSig= useSelector(store=>store.pokemones.next)
   //console.log(pkm);
-
   useEffect(() => {
     const fetchData =() =>{
       dispatch(obtenerPokemonesAccion())
     }
-  
     fetchData()
   }, [dispatch])
-
   return (
     <div className='container'>
         <h1>lista pokemon</h1>
@@ -49,7 +44,6 @@ const Pokemones = () => {
               pkm.length===0 &&
               <button type='button' className='btn btn-sm btn btn-light' onClick={()=>dispatch(obtenerPokemonesAccion())}>obtner pokemones</button>
             }
-            
             {
               pkmAnt &&
               <button type='button' className='btn btn-sm btn btn-light' onClick={()=>dispatch(anteriorPokemonesAccion())}>Anterior pokemones</button>
@@ -68,5 +62,4 @@ const Pokemones = () => {
     </div>
   )
 }
-
 export default Pokemones
